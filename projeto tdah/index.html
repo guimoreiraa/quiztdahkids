@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TDAH Produtivo Kids — Crie o Planner do Seu Filho</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF8ED;
+    --card:#FFFFFF;
+    --orange:#FF7A00;
+    --orange-dark:#F26B00;
+    --orange-soft:#FFF1E0;
+    --brown:#8A4B08;
+    --brown-dark:#6E3A05;
+    --text:#5C3A11;
+    --border:#F0E4D3;
+    --border-active:#FF8A1E;
+    --green:#22B573;
+    --green-soft:#E8F8F0;
+    --yellow-soft:#FFF9E3;
+    --red:#E5484D;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+  }
+  .app{width:100%;max-width:420px;min-height:100vh;position:relative;padding-bottom:40px;}
+
+  /* ===== barra de progresso ===== */
+  .progress-wrap{position:sticky;top:0;z-index:50;height:6px;background:#F3E8D8;}
+  .progress-bar{height:100%;width:0%;background:var(--orange);transition:width .45s ease;border-radius:0 4px 4px 0;}
+
+  .step{display:none;padding:22px 18px 30px;animation:fadeIn .35s ease;}
+  .step.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ===== landing ===== */
+  .brand-pill{
+    display:flex;align-items:center;gap:8px;justify-content:center;
+    background:#fff;border:1px solid var(--border);border-radius:999px;
+    padding:10px 18px;width:max-content;margin:6px auto 18px;
+    font-weight:700;color:var(--brown-dark);font-size:14px;letter-spacing:.3px;
+    box-shadow:0 2px 8px rgba(140,90,20,.06);
+  }
+  .brand-pill .bulb{background:var(--orange);color:#fff;border-radius:999px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .hero-book{position:relative;width:max-content;margin:0 auto 20px;}
+  .novo-tag{
+    position:absolute;top:-10px;right:-52px;background:var(--orange);color:#fff;
+    font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;transform:rotate(6deg);
+    box-shadow:0 3px 8px rgba(242,107,0,.35);
+  }
+  .book-emoji{font-size:86px;line-height:1;filter:drop-shadow(0 8px 14px rgba(140,90,20,.18));}
+  .personal-pill{
+    background:var(--yellow-soft);color:var(--brown-dark);font-size:12.5px;font-weight:700;
+    border-radius:999px;padding:8px 16px;width:max-content;margin:0 auto 16px;
+  }
+  h1.headline{font-size:31px;line-height:1.15;text-align:center;color:var(--brown-dark);font-weight:800;}
+  h1.headline .accent{color:var(--orange);display:block;}
+  .subhead{font-size:18px;font-weight:700;color:var(--brown-dark);text-align:center;margin-top:14px;line-height:1.35;}
+  .lead-text{font-size:14.5px;text-align:center;margin-top:14px;line-height:1.55;color:var(--text);}
+  .lead-text b{color:var(--brown-dark);}
+
+  .btn{
+    display:block;text-align:center;width:100%;
+    background:var(--orange);color:#fff;border:none;cursor:pointer;
+    font-family:'Poppins',sans-serif;font-size:17px;font-weight:700;
+    padding:17px 20px;border-radius:14px;margin-top:22px;
+    box-shadow:0 6px 16px rgba(242,107,0,.32);
+    transition:transform .12s ease, box-shadow .12s ease, opacity .2s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+  .micro{font-size:12.5px;text-align:center;margin-top:12px;color:var(--brown);}
+  .social{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:14px;}
+  .avatars{display:flex;align-items:center;}
+  .avatars span{font-size:22px;margin-left:-6px;}
+  .avatars img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #fff;margin-left:-8px;box-shadow:0 1px 4px rgba(140,90,20,.15);}
+  .avatars img:first-child{margin-left:0;}
+  .social b{font-size:13px;color:var(--brown-dark);line-height:1.3;}
+
+  .benefits-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px 18px;margin-top:26px;box-shadow:0 4px 14px rgba(140,90,20,.05);
+  }
+  .benefits-title{font-size:12.5px;font-weight:800;color:var(--brown-dark);text-align:center;letter-spacing:.4px;margin-bottom:14px;}
+  .benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .benefit{display:flex;gap:7px;font-size:13px;font-weight:600;color:var(--brown-dark);line-height:1.3;}
+  .benefit .chk{color:var(--orange);font-weight:800;}
+
+  /* ===== perguntas ===== */
+  .q-title{font-size:21px;font-weight:800;color:var(--brown-dark);text-align:center;line-height:1.3;}
+  .q-sub{font-size:13.5px;color:var(--orange-dark);text-align:center;font-weight:600;margin-top:6px;margin-bottom:20px;}
+  .counter-top{text-align:center;margin-bottom:14px;}
+  .counter-top .num{color:var(--orange-dark);font-weight:800;font-size:15px;}
+  .counter-top .lbl{font-size:12px;color:var(--brown);display:block;margin-top:2px;}
+
+  .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .gender-card{
+    background:#fff;border:2px solid var(--border);border-radius:var(--radius);
+    padding:16px 10px 14px;text-align:center;cursor:pointer;transition:border-color .15s, background .15s;
+  }
+  .gender-card .g-emoji{font-size:64px;line-height:1;display:block;background:var(--orange-soft);border-radius:12px;padding:14px 0;}
+  .gender-card .g-img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;}
+  .gender-card .g-label{font-weight:800;color:var(--brown-dark);font-size:16px;margin-top:10px;display:block;}
+  .gender-card.selected{border-color:var(--border-active);background:var(--orange-soft);}
+
+  .age-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .age-card{
+    background:#fff;border:2px solid var(--border);border-radius:var(--radius);
+    padding:20px 10px;text-align:center;cursor:pointer;transition:border-color .15s, background .15s;
+  }
+  .age-card .a-emoji{font-size:38px;display:block;}
+  .age-card .a-label{font-weight:800;color:var(--brown-dark);font-size:15px;margin-top:8px;display:block;}
+  .age-card.selected{border-color:var(--border-active);background:var(--orange-soft);}
+
+  .name-emoji{font-size:52px;background:var(--orange-soft);width:88px;height:88px;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+  input.name-input{
+    width:100%;font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--brown-dark);
+    padding:16px 18px;border:2px solid var(--border);border-radius:14px;background:#fff;outline:none;
+    transition:border-color .15s;
+  }
+  input.name-input:focus{border-color:var(--border-active);}
+
+  .opt-list{display:flex;flex-direction:column;gap:12px;}
+  .opt{
+    display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--border);
+    border-radius:14px;padding:14px 14px;cursor:pointer;transition:border-color .15s, background .15s;
+  }
+  .opt .radio{
+    width:22px;height:22px;min-width:22px;border-radius:999px;border:2px solid #F5C36B;
+    display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;
+    transition:background .15s, border-color .15s;
+  }
+  .opt .o-emoji{font-size:20px;}
+  .opt .o-label{font-size:14px;font-weight:600;color:var(--brown-dark);line-height:1.3;}
+  .opt.selected{border-color:var(--border-active);background:var(--orange-soft);}
+  .opt.selected .radio{background:var(--orange);border-color:var(--orange);}
+  .opt.selected .radio::after{content:'✓';}
+
+  .nav-row{display:flex;gap:12px;margin-top:22px;align-items:stretch;}
+  .btn-back{
+    background:#fff;border:2px solid var(--border);color:var(--orange);border-radius:14px;
+    width:56px;min-width:56px;font-size:20px;cursor:pointer;font-family:'Poppins',sans-serif;
+  }
+  .nav-row .btn{margin-top:0;flex:1;}
+
+  /* ===== diagnóstico ===== */
+  .diag-card{
+    background:#fff;border-radius:20px;padding:28px 20px;margin-top:24px;
+    box-shadow:0 8px 24px rgba(140,90,20,.08);
+  }
+  .diag-warn{font-size:40px;text-align:center;}
+  .diag-title{font-size:24px;font-weight:800;color:var(--red);text-align:center;margin-top:8px;}
+  .diag-sub{font-size:13.5px;color:var(--red);text-align:center;margin-top:10px;margin-bottom:22px;line-height:1.4;}
+  .bar-item{margin-bottom:16px;}
+  .bar-head{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:700;color:var(--brown-dark);}
+  .bar-head .pct{color:var(--red);font-weight:800;}
+  .bar-track{height:12px;background:#EFEFEF;border-radius:999px;margin-top:6px;overflow:hidden;}
+  .bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#3DBB4E,#F5C242,#E5484D);transition:width 1.1s ease;}
+  .diag-q{font-size:18px;font-weight:800;color:var(--brown-dark);text-align:center;margin:22px 0 16px;}
+
+  /* ===== resgate ===== */
+  .rescue-card{background:#fff;border-radius:20px;padding:28px 20px;margin-top:40px;box-shadow:0 8px 24px rgba(140,90,20,.08);}
+  .rescue-title{font-size:21px;font-weight:800;color:var(--brown-dark);text-align:center;line-height:1.3;}
+  .rescue-green{background:var(--green-soft);border-radius:12px;padding:14px 16px;font-size:14px;text-align:center;color:#1B7A52;font-weight:600;margin-top:16px;line-height:1.45;}
+  .rescue-green b{color:var(--green);}
+  .rescue-yellow{background:var(--yellow-soft);border:1px solid #F5E7B8;border-radius:14px;padding:16px;margin-top:14px;}
+  .rescue-yellow-title{font-size:13.5px;font-weight:800;color:var(--brown-dark);text-align:center;margin-bottom:12px;}
+  .conquest{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:11px 12px;margin-bottom:8px;font-size:13.5px;font-weight:600;color:var(--brown-dark);line-height:1.3;}
+  .conquest .c-chk{background:var(--orange);color:#fff;border-radius:999px;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+
+  /* ===== tela final ===== */
+  .final-banner{
+    background:var(--green-soft);color:#1B7A52;font-weight:700;font-size:15px;text-align:center;
+    border-radius:12px;padding:14px 16px;margin-top:10px;line-height:1.4;
+  }
+  .final-book{
+    position:relative;width:max-content;margin:24px auto 8px;border:2px solid var(--green);
+    border-radius:18px;padding:22px 34px;background:#fff;
+  }
+  .final-book .fb-emoji{font-size:72px;}
+  .final-book .fb-check{
+    position:absolute;top:-10px;right:-10px;background:var(--green);color:#fff;border-radius:999px;
+    width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+  }
+  .final-card{background:#fff;border-radius:20px;padding:24px 18px;margin-top:14px;box-shadow:0 8px 24px rgba(140,90,20,.08);}
+  .final-progress-head{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;}
+  .final-progress-head .fp-label{color:var(--red);}
+  .final-progress-head .fp-pct{color:var(--red);font-weight:800;}
+  .final-progress-head.done .fp-label,.final-progress-head.done .fp-pct{color:var(--green);}
+  .final-track{height:14px;background:#EFEFEF;border-radius:999px;margin-top:8px;overflow:hidden;}
+  .final-fill{height:100%;width:0%;background:linear-gradient(90deg,#35C06B,#1FA65A);border-radius:999px;transition:width .3s linear;}
+  .build-box{background:var(--yellow-soft);border:1px solid #F5E7B8;border-radius:14px;padding:16px;margin-top:16px;}
+  .build-title{font-size:13.5px;font-weight:800;color:var(--orange-dark);margin-bottom:10px;}
+  .build-item{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:600;color:var(--brown-dark);padding:5px 0;opacity:.25;transition:opacity .3s;}
+  .build-item.on{opacity:1;}
+  .build-item .b-chk{color:var(--green);font-weight:800;opacity:0;transition:opacity .3s;}
+  .build-item.on .b-chk{opacity:1;}
+  .ready-box{background:var(--green-soft);border-radius:14px;padding:18px 16px;margin-top:16px;text-align:center;display:none;}
+  .ready-box.show{display:block;animation:fadeIn .4s ease;}
+  .ready-title{font-size:17px;font-weight:800;color:#1B7A52;}
+  .ready-sub{font-size:13px;color:#1B7A52;font-weight:600;margin-top:6px;line-height:1.4;}
+  .ready-icons{font-size:24px;margin-top:10px;letter-spacing:6px;}
+  .ready-wait{font-size:13px;color:var(--green);font-weight:700;margin-top:12px;}
+
+  .confetti{position:fixed;top:-12px;font-size:16px;animation:fall linear forwards;z-index:100;pointer-events:none;}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.8;}}
+
+  /* ===== página de vendas (etapa 15) ===== */
+  .sales{padding-bottom:60px;}
+  .sales-pill{background:var(--yellow-soft);color:var(--brown-dark);font-size:12px;font-weight:700;border-radius:999px;padding:7px 14px;width:max-content;margin:4px auto 14px;}
+  .sales-h1{font-size:26px;font-weight:800;color:var(--brown-dark);text-align:center;line-height:1.2;}
+  .sales-h1 .accent{color:var(--orange);}
+  .sales-sub{font-size:13.5px;text-align:center;margin-top:12px;line-height:1.5;}
+  .stars{text-align:center;font-size:13px;font-weight:700;color:var(--brown-dark);margin-top:10px;}
+  .stars .st{color:#F5B301;}
+  .sales-section{margin-top:38px;}
+  .sales-h2{font-size:20px;font-weight:800;color:var(--brown-dark);text-align:center;line-height:1.3;margin-bottom:18px;}
+  .areas-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .area-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;}
+  .area-card .ar-emoji{font-size:26px;display:block;}
+  .area-card .ar-title{font-size:13px;font-weight:800;color:var(--brown-dark);margin-top:6px;display:block;line-height:1.25;}
+  .area-card .ar-desc{font-size:11.5px;color:var(--text);margin-top:4px;display:block;line-height:1.35;}
+  .modules-note{background:var(--yellow-soft);border:1px solid #F5E7B8;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;color:var(--brown-dark);text-align:center;margin-top:14px;line-height:1.4;}
+  .module-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 16px;margin-top:16px;box-shadow:0 4px 14px rgba(140,90,20,.05);}
+  .module-tag{background:var(--orange-soft);color:var(--orange-dark);font-size:11px;font-weight:800;border-radius:999px;padding:5px 12px;width:max-content;letter-spacing:.3px;}
+  .module-title{font-size:16px;font-weight:800;color:var(--brown-dark);margin-top:10px;}
+  .module-desc{font-size:13px;margin-top:6px;line-height:1.5;}
+  .module-mock{background:var(--orange-soft);border-radius:12px;margin-top:12px;padding:26px 10px;text-align:center;font-size:38px;}
+  .module-meta{font-size:11.5px;color:var(--brown);font-weight:600;text-align:center;margin-top:8px;}
+  .emais{background:var(--yellow-soft);color:var(--brown-dark);font-weight:800;font-size:14px;border-radius:999px;padding:10px 20px;width:max-content;margin:18px auto 0;}
+  .why-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:12px;display:flex;gap:12px;align-items:flex-start;}
+  .why-num{background:var(--orange);color:#fff;font-weight:800;font-size:14px;border-radius:999px;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;}
+  .why-title{font-size:14.5px;font-weight:800;color:var(--brown-dark);}
+  .why-desc{font-size:13px;margin-top:4px;line-height:1.5;}
+  .pair{border-radius:14px;padding:14px 16px;margin-top:12px;font-size:13.5px;line-height:1.5;}
+  .pair-before{background:#FDECEC;border:1px solid #F5C9C9;}
+  .pair-before .p-tag{color:var(--red);font-weight:800;font-size:12px;letter-spacing:.4px;}
+  .pair-after{background:var(--green-soft);border:1px solid #BFE8D4;margin-top:6px;}
+  .pair-after .p-tag{color:var(--green);font-weight:800;font-size:12px;letter-spacing:.4px;}
+  .pair b{color:var(--brown-dark);}
+  .depo{background:#E7F7EE;border-radius:14px 14px 14px 4px;padding:13px 15px;font-size:13px;line-height:1.5;margin-top:12px;color:#25543C;}
+  .depo .d-name{font-weight:800;font-size:12px;color:#1B7A52;display:block;margin-bottom:3px;}
+  .depo .d-time{display:block;text-align:right;font-size:10.5px;color:#7BA893;margin-top:4px;}
+  .how-step{display:flex;gap:12px;align-items:flex-start;margin-top:14px;}
+  .how-emoji{background:var(--orange-soft);border-radius:12px;width:44px;height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .how-title{font-size:14px;font-weight:800;color:var(--brown-dark);}
+  .how-desc{font-size:12.5px;margin-top:3px;line-height:1.45;}
+  .offer-card{background:#fff;border:2px solid var(--orange);border-radius:20px;padding:26px 18px;margin-top:36px;text-align:center;box-shadow:0 10px 28px rgba(242,107,0,.15);}
+  .offer-title{font-size:20px;font-weight:800;color:var(--brown-dark);line-height:1.3;}
+  .countdown{font-size:34px;font-weight:800;color:var(--red);margin-top:12px;font-variant-numeric:tabular-nums;}
+  .countdown-lbl{font-size:12px;color:var(--red);font-weight:700;}
+  .offer-book{font-size:64px;margin-top:10px;}
+  .price-old{font-size:15px;color:#B0A08C;text-decoration:line-through;margin-top:8px;font-weight:600;}
+  .price-new{font-size:38px;font-weight:800;color:var(--green);line-height:1.1;}
+  .price-note{font-size:12px;color:var(--brown);font-weight:600;margin-top:4px;}
+  .guarantee{font-size:12.5px;color:var(--brown-dark);font-weight:600;margin-top:14px;line-height:1.5;}
+  .sales-disclaimer{font-size:10.5px;color:#B0A08C;text-align:center;margin-top:26px;line-height:1.5;padding:0 6px;}
+
+  .img-full{width:100%;border-radius:14px;display:block;}
+  .area-card .ar-img{width:100%;border-radius:10px;display:block;margin-bottom:8px;}
+  .module-mock img{width:100%;border-radius:10px;display:block;}
+  .module-mock{padding:0;background:transparent;font-size:0;}
+  .module-mock.no-img{padding:26px 10px;background:var(--orange-soft);font-size:38px;text-align:center;border-radius:12px;}
+  .depo-img{width:100%;border-radius:14px;display:block;margin-top:12px;box-shadow:0 4px 14px rgba(140,90,20,.08);}
+  .offer-cover{width:70%;max-width:220px;border-radius:14px;display:block;margin:14px auto 0;box-shadow:0 8px 20px rgba(140,90,20,.18);}
+  .value-stack{background:var(--yellow-soft);border:1px solid #F5E7B8;border-radius:14px;padding:14px 16px;margin-top:16px;text-align:left;}
+  .value-stack .vs-item{display:flex;gap:8px;font-size:13px;font-weight:600;color:var(--brown-dark);padding:4px 0;line-height:1.4;}
+  .value-stack .vs-item .v-chk{color:var(--green);font-weight:800;}
+  .guarantee-box{background:var(--green-soft);border:1px solid #BFE8D4;border-radius:14px;padding:16px;margin-top:16px;text-align:center;}
+  .guarantee-box .g-title{font-size:14.5px;font-weight:800;color:#1B7A52;}
+  .guarantee-box .g-desc{font-size:12.5px;color:#25543C;margin-top:6px;line-height:1.5;}
+
+  /* colagem do hero: livro no centro, páginas ao redor */
+  .hero-collage{position:relative;width:100%;padding-top:105%;margin-top:18px;}
+  .hero-collage img{position:absolute;border-radius:10px;box-shadow:0 6px 16px rgba(140,90,20,.14);}
+  .hero-collage .hc-capa{width:40%;left:30%;top:20%;z-index:2;border-radius:12px;box-shadow:0 10px 26px rgba(140,90,20,.22);}
+  .hero-collage .hc-p1{width:24%;left:4%;top:2%;transform:rotate(-5deg);}
+  .hero-collage .hc-p3{width:24%;right:4%;top:3%;transform:rotate(6deg);}
+  .hero-collage .hc-p4{width:24%;left:1%;top:37%;transform:rotate(4deg);}
+  .hero-collage .hc-p5{width:24%;right:1%;top:39%;transform:rotate(-4deg);}
+  .hero-collage .hc-p6{width:24%;left:4%;bottom:2%;transform:rotate(-6deg);}
+  .hero-collage .hc-p7{width:24%;left:38%;bottom:0%;transform:rotate(2deg);}
+  .hero-collage .hc-p8{width:24%;right:3%;bottom:2%;transform:rotate(5deg);}
+
+  @media (prefers-reduced-motion: reduce){
+
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- ETAPA 1: LANDING -->
+  <section class="step active" data-step="1">
+    <div class="brand-pill"><span class="bulb">💡</span> TDAH PRODUTIVO KIDS</div>
+    <div class="hero-book">
+      <span class="novo-tag">🥳 Novo!</span>
+      <span class="book-emoji">📘</span>
+    </div>
+    <div class="personal-pill">100% personalizado para o cérebro do seu filho</div>
+    <h1 class="headline">Seu filho não é <span class="accent">preguiçoso.</span></h1>
+    <p class="subhead">O cérebro dele só precisa de um sistema diferente.</p>
+    <p class="lead-text">Responda <b>6 perguntas rápidas</b> e receba um planner criado especialmente para a rotina do seu filho com TDAH — para vocês usarem juntos.</p>
+    <button class="btn" onclick="goTo(2)">Criar o Planner do Meu Filho →</button>
+    <p class="micro">Leva menos de 2 minutos · Para crianças de 4 a 14 anos</p>
+    <div class="social">
+      <div class="avatars">
+        <img data-img="avatar-1.jpg" data-fallback="👩" alt="">
+        <img data-img="avatar-2.jpg" data-fallback="👩‍🦱" alt="">
+        <img data-img="avatar-3.jpg" data-fallback="👱‍♀️" alt="">
+        <img data-img="avatar-4.jpg" data-fallback="👩🏽" alt="">
+        <img data-img="avatar-5.jpg" data-fallback="👩🏻" alt="">
+      </div>
+      <b>+2.400 famílias já transformaram a rotina</b>
+    </div>
+    <div class="benefits-card">
+      <div class="benefits-title">💡 CRIADO PARA O CÉREBRO DO SEU FILHO</div>
+      <div class="benefits-grid">
+        <div class="benefit"><span class="chk">✓</span> Combate a procrastinação</div>
+        <div class="benefit"><span class="chk">✓</span> Reduz conflitos em casa</div>
+        <div class="benefit"><span class="chk">✓</span> Organiza a rotina escolar</div>
+        <div class="benefit"><span class="chk">✓</span> Aumenta a autoconfiança</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETAPA 2: GÊNERO -->
+  <section class="step" data-step="2">
+    <h2 class="q-title">Seu filho é menino ou menina?</h2>
+    <p class="q-sub">Selecione uma opção</p>
+    <div class="gender-grid">
+      <div class="gender-card" data-value="menino" onclick="pickGender(this)">
+        <img class="g-img" data-img="menino.jpg" data-fallback="👦" alt="Menino"><span class="g-label">Menino</span>
+      </div>
+      <div class="gender-card" data-value="menina" onclick="pickGender(this)">
+        <img class="g-img" data-img="menina.jpg" data-fallback="👧" alt="Menina"><span class="g-label">Menina</span>
+      </div>
+    </div>
+    <button class="btn" id="btnGender" disabled onclick="goTo(3)">Continuar →</button>
+  </section>
+
+  <!-- ETAPA 3: IDADE -->
+  <section class="step" data-step="3">
+    <div class="counter-top">
+      <span class="num" id="counterNum">4.231 meninos</span>
+      <span class="lbl">Já têm seu Planner TDAH Produtivo Kids</span>
+    </div>
+    <h2 class="q-title">Quantos anos <span id="pronoun">ele</span> tem?</h2>
+    <p class="q-sub">Selecione uma opção</p>
+    <div class="age-grid">
+      <div class="age-card" data-value="4-6" onclick="pickAge(this)"><span class="a-emoji">👶</span><span class="a-label">4–6 anos</span></div>
+      <div class="age-card" data-value="7-9" onclick="pickAge(this)"><span class="a-emoji">🧒</span><span class="a-label">7–9 anos</span></div>
+      <div class="age-card" data-value="10-12" onclick="pickAge(this)"><span class="a-emoji">🙂</span><span class="a-label">10–12 anos</span></div>
+      <div class="age-card" data-value="13-14" onclick="pickAge(this)"><span class="a-emoji">🧑‍🎓</span><span class="a-label">13–14 anos</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(2)">←</button>
+      <button class="btn" id="btnAge" disabled onclick="goTo(4)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 4: NOME -->
+  <section class="step" data-step="4">
+    <div class="name-emoji" id="nameEmoji">🧒</div>
+    <h2 class="q-title" id="nameTitle">Qual o nome do seu filho?</h2>
+    <p class="q-sub" id="nameSub">Vamos personalizar o planner com o nome dele</p>
+    <input class="name-input" id="childName" type="text" placeholder="Digite o nome aqui" oninput="checkName()">
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(3)">←</button>
+      <button class="btn" id="btnName" disabled onclick="saveName()">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 5: ELIMINAR DA ROTINA -->
+  <section class="step" data-step="5">
+    <h2 class="q-title">O que você mais quer eliminar da rotina <span class="kid-art">do</span> <span class="kid-name"></span>?</h2>
+    <p class="q-sub">Selecione quantas quiser</p>
+    <div class="opt-list" id="list5">
+      <div class="opt" onclick="toggleOpt(this,'list5')"><span class="radio"></span><span class="o-emoji">📚</span><span class="o-label">Guerras diárias no dever de casa</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list5')"><span class="radio"></span><span class="o-emoji">📁</span><span class="o-label">Desorganização constante com tudo</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list5')"><span class="radio"></span><span class="o-emoji">😭</span><span class="o-label">Crises, choro e birra frequentes</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list5')"><span class="radio"></span><span class="o-emoji">😔</span><span class="o-label">Ele/ela se acha incapaz ou diferente</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list5')"><span class="radio"></span><span class="o-emoji">📢</span><span class="o-label">Escola reclama e cobra o tempo todo</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list5')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(4)">←</button>
+      <button class="btn" id="btn5" disabled onclick="goTo(6)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 6: ÁREAS DE DESAFIO -->
+  <section class="step" data-step="6">
+    <h2 class="q-title">Em quais áreas o TDAH traz mais desafios para <span class="kid-name"></span>?</h2>
+    <p class="q-sub">Selecione quantas quiser</p>
+    <div class="opt-list" id="list6">
+      <div class="opt" onclick="toggleOpt(this,'list6')"><span class="radio"></span><span class="o-emoji">🔥</span><span class="o-label">Controle de impulsividade</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list6')"><span class="radio"></span><span class="o-emoji">🎯</span><span class="o-label">Manter o foco em qualquer atividade</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list6')"><span class="radio"></span><span class="o-emoji">📋</span><span class="o-label">Organização e planejamento</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list6')"><span class="radio"></span><span class="o-emoji">⏰</span><span class="o-label">Gestão do tempo e horários</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list6')"><span class="radio"></span><span class="o-emoji">🧠</span><span class="o-label">Memorizar tarefas e compromissos</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list6')"><span class="radio"></span><span class="o-emoji">👥</span><span class="o-label">Relacionamento com outras crianças</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list6')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(5)">←</button>
+      <button class="btn" id="btn6" disabled onclick="goTo(7)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 7: DISTRAÇÕES -->
+  <section class="step" data-step="7">
+    <h2 class="q-title">O que mais distrai <span class="kid-name"></span>?</h2>
+    <p class="q-sub">Selecione quantas quiser</p>
+    <div class="opt-list" id="list7">
+      <div class="opt" onclick="toggleOpt(this,'list7')"><span class="radio"></span><span class="o-emoji">📱</span><span class="o-label">Celular, tablet ou televisão</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list7')"><span class="radio"></span><span class="o-emoji">👫</span><span class="o-label">Outras crianças ou pessoas ao redor</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list7')"><span class="radio"></span><span class="o-emoji">💭</span><span class="o-label">Pensamentos que fogem do assunto</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list7')"><span class="radio"></span><span class="o-emoji">📝</span><span class="o-label">Tarefas pendentes na cabeça</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list7')"><span class="radio"></span><span class="o-emoji">🔊</span><span class="o-label">Sons e barulhos do ambiente</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list7')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(6)">←</button>
+      <button class="btn" id="btn7" disabled onclick="goTo(8)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 8: DIAGNÓSTICO -->
+  <section class="step" data-step="8">
+    <div class="diag-card">
+      <div class="diag-warn">⚠️</div>
+      <div class="diag-title">Preocupante...</div>
+      <p class="diag-sub">Até agora identificamos que a situação <span class="kid-art">do</span> <span class="kid-name"></span> está assim:</p>
+      <div class="bar-item">
+        <div class="bar-head"><span>⏰ Dificuldade em seguir rotinas</span><span class="pct">82%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-w="82"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-head"><span>📚 Conflitos no dever de casa</span><span class="pct">78%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-w="78"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-head"><span>🎒 Desorganização escolar</span><span class="pct">74%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-w="74"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-head"><span>😔 Baixa autoconfiança</span><span class="pct">71%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-w="71"></div></div>
+      </div>
+      <div class="diag-q">Você se identifica?</div>
+      <div class="opt-list">
+        <div class="opt" onclick="goTo(9)"><span class="o-emoji">😔</span><span class="o-label">Sim, é exatamente assim</span></div>
+        <div class="opt" onclick="goTo(9)"><span class="o-emoji">🙂</span><span class="o-label">Não, está melhor do que isso</span></div>
+        <div class="opt" onclick="goTo(9)"><span class="o-emoji">😐</span><span class="o-label">Mais ou menos</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETAPA 9: RESGATE -->
+  <section class="step" data-step="9">
+    <div class="rescue-card">
+      <h2 class="rescue-title">Entendemos a situação <span class="kid-art">do</span> <span class="kid-name"></span>...</h2>
+      <div class="rescue-green">E garantimos que a rotina de vocês vai ser outra depois do <b>Planner TDAH Produtivo Kids</b> 😊</div>
+      <div class="rescue-yellow">
+        <div class="rescue-yellow-title">✨ O que vocês vão conquistar: ✨</div>
+        <div class="conquest"><span class="c-chk">✓</span> Organização e rotina com clareza no dia a dia</div>
+        <div class="conquest"><span class="c-chk">✓</span> Redução dos conflitos e crises em casa</div>
+        <div class="conquest"><span class="c-chk">✓</span> Aumento da autoconfiança e desempenho escolar</div>
+      </div>
+      <button class="btn" onclick="goTo(10)">Ok, continuar criando →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 10: ENERGIA -->
+  <section class="step" data-step="10">
+    <h2 class="q-title">Como <span class="kid-name"></span> gerencia melhor a energia durante o dia?</h2>
+    <p class="q-sub">Selecione quantas quiser</p>
+    <div class="opt-list" id="list10">
+      <div class="opt" onclick="toggleOpt(this,'list10')"><span class="radio"></span><span class="o-emoji">🎮</span><span class="o-label">Momentos de brincadeira livre</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list10')"><span class="radio"></span><span class="o-emoji">🥗</span><span class="o-label">Alimentação equilibrada e horários certos</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list10')"><span class="radio"></span><span class="o-emoji">⏸️</span><span class="o-label">Pausas entre as atividades</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list10')"><span class="radio"></span><span class="o-emoji">🏃</span><span class="o-label">Exercício físico ou esporte</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list10')"><span class="radio"></span><span class="o-emoji">😴</span><span class="o-label">Rotina de sono consistente</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list10')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(9)">←</button>
+      <button class="btn" id="btn10" disabled onclick="goTo(11)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 11: O QUE NÃO PODE FALTAR -->
+  <section class="step" data-step="11">
+    <h2 class="q-title">O que NÃO pode faltar no planner <span class="kid-art">do</span> <span class="kid-name"></span>?</h2>
+    <p class="q-sub">Selecione quantas quiser</p>
+    <div class="opt-list" id="list11">
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">✏️</span><span class="o-label">Rotina escolar e dever de casa</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">🌗</span><span class="o-label">Rotina da manhã e da noite</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">🏆</span><span class="o-label">Sistema de missões e recompensas</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">💪</span><span class="o-label">Controle de humor e emoções</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">📖</span><span class="o-label">Acompanhamento de leitura e estudos</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">🥦</span><span class="o-label">Saúde e alimentação</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list11')"><span class="radio"></span><span class="o-emoji">🎯</span><span class="o-label">Metas semanais visuais</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list11')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(10)">←</button>
+      <button class="btn" id="btn11" disabled onclick="goTo(12)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 12: ESTRUTURA DA ROTINA -->
+  <section class="step" data-step="12">
+    <h2 class="q-title">Como você deseja estruturar a rotina <span class="kid-art">do</span> <span class="kid-name"></span> para reduzir os conflitos?</h2>
+    <p class="q-sub">Selecione quantas opções preferir</p>
+    <div class="opt-list" id="list12">
+      <div class="opt" onclick="toggleOpt(this,'list12')"><span class="radio"></span><span class="o-emoji">✅</span><span class="o-label">Checklists visuais simples</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list12')"><span class="radio"></span><span class="o-emoji">🎯</span><span class="o-label">Objetivos e metas diárias</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list12')"><span class="radio"></span><span class="o-emoji">⭐</span><span class="o-label">Sistema de recompensas e estrelas</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list12')"><span class="radio"></span><span class="o-emoji">🎨</span><span class="o-label">Organização por cores e ícones</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list12')"><span class="radio"></span><span class="o-emoji">⏸️</span><span class="o-label">Pausas programadas durante o dia</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list12')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(11)">←</button>
+      <button class="btn" id="btn12" disabled onclick="goTo(13)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 13: INCLUIR A MAIS -->
+  <section class="step" data-step="13">
+    <h2 class="q-title">E o que gostaria de incluir a mais no planner <span class="kid-art">do</span> <span class="kid-name"></span>?</h2>
+    <p class="q-sub">Selecione quantas opções preferir</p>
+    <div class="opt-list" id="list13">
+      <div class="opt" onclick="toggleOpt(this,'list13')"><span class="radio"></span><span class="o-emoji">📚</span><span class="o-label">Clube de leitura infantil</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list13')"><span class="radio"></span><span class="o-emoji">🌍</span><span class="o-label">Inglês e idiomas</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list13')"><span class="radio"></span><span class="o-emoji">⚽</span><span class="o-label">Esportes e atividades físicas</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list13')"><span class="radio"></span><span class="o-emoji">🎨</span><span class="o-label">Arte, música e criatividade</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list13')"><span class="radio"></span><span class="o-emoji">🧩</span><span class="o-label">Jogos educativos e raciocínio</span></div>
+      <div class="opt" onclick="toggleOpt(this,'list13')"><span class="radio"></span><span class="o-emoji">👫</span><span class="o-label">Habilidades sociais e amizades</span></div>
+      <div class="opt opt-all" onclick="toggleAll(this,'list13')"><span class="radio"></span><span class="o-label">Todas as opções acima</span></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(12)">←</button>
+      <button class="btn" id="btn13" disabled onclick="startFinal()">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ETAPA 14: MONTAGEM FINAL -->
+  <section class="step" data-step="14">
+    <div class="final-banner">Planner criado com sucesso para <span class="kid-name"></span>! 🎉</div>
+    <div class="final-book">
+      <span class="fb-check">✓</span>
+      <span class="fb-emoji">📘</span>
+    </div>
+    <div class="final-card">
+      <div class="final-progress-head" id="fpHead">
+        <span class="fp-label">Criando o Planner TDAH Produtivo Kids...</span>
+        <span class="fp-pct" id="fpPct">0%</span>
+      </div>
+      <div class="final-track"><div class="final-fill" id="finalFill"></div></div>
+      <div class="build-box">
+        <div class="build-title">Personalizando o planner <span class="kid-art">do</span> <span class="kid-name"></span>:</div>
+        <div class="build-item"><span>🏆 Sistema de Missões e Recompensas</span><span class="b-chk">✓</span></div>
+        <div class="build-item"><span>💪 Módulo de Controle de Emoções</span><span class="b-chk">✓</span></div>
+        <div class="build-item"><span>🌗 Rotinas da manhã e da noite</span><span class="b-chk">✓</span></div>
+        <div class="build-item"><span>📖 Guia Completo dos Pais</span><span class="b-chk">✓</span></div>
+        <div class="build-item"><span>🎯 Metas semanais adaptadas ao TDAH</span><span class="b-chk">✓</span></div>
+        <div class="build-item"><span>⭐ Quadro de conquistas e estrelas</span><span class="b-chk">✓</span></div>
+      </div>
+      <div class="ready-box" id="readyBox">
+        <div class="ready-title">Seu planner está pronto!</div>
+        <div class="ready-sub">Personalizamos mais de 150 páginas exclusivamente para você</div>
+        <div class="ready-icons">📋 ⏰ 🏆 🎯</div>
+        <div class="ready-wait" id="readyWait">Aguarde alguns instantes para acessar...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETAPA 15: PÁGINA DE VENDAS -->
+  <section class="step sales" data-step="15">
+    <div class="sales-pill">✨ Criado a partir das suas respostas</div>
+    <h2 class="sales-h1">O TDAH <span class="kid-art">do</span> <span class="kid-name"></span> <span class="accent">sob controle</span> — com um planner feito do jeito que o cérebro dele funciona</h2>
+    <p class="sales-sub">Você respondeu. Nós montamos. Agora só falta uma decisão para a rotina da sua casa começar a mudar — <b>hoje</b>.</p>
+    <div class="stars"><span class="st">★★★★★</span> 4,9 de 5 · avaliado por famílias como a sua</div>
+    <button class="btn" onclick="goToOffer()">Quero o planner <span class="kid-art">do</span> <span class="kid-name"></span> agora!</button>
+    <div class="hero-collage">
+      <img class="hc-p1" data-img="hero-pagina-1.jpg" alt="Página do planner">
+      <img class="hc-p3" data-img="hero-pagina-3.jpg" alt="Página do planner">
+      <img class="hc-p4" data-img="hero-pagina-4.jpg" alt="Página do planner">
+      <img class="hc-capa" data-img="hero-pagina-2.jpg" alt="Planner TDAH Produtivo Kids">
+      <img class="hc-p5" data-img="hero-pagina-5.jpg" alt="Página do planner">
+      <img class="hc-p6" data-img="hero-pagina-6.jpg" alt="Página do planner">
+      <img class="hc-p7" data-img="hero-pagina-7.jpg" alt="Página do planner">
+      <img class="hc-p8" data-img="hero-pagina-8.jpg" alt="Página do planner">
+    </div>
+
+    <div class="sales-section">
+      <h3 class="sales-h2">As 8 áreas que o planner <span class="kid-art">do</span> <span class="kid-name"></span> desenvolve</h3>
+      <p class="sales-sub" style="margin-top:-8px;margin-bottom:16px;">Cada área ataca um desafio que <b>você mesma marcou</b> no quiz.</p>
+      <div class="areas-grid">
+        <div class="area-card"><img class="ar-img" data-img="area-1-foco.jpeg" alt="Foco e Atenção"><span class="ar-emoji">🎯</span><span class="ar-title">Foco e Atenção</span><span class="ar-desc">Sprints curtos que o cérebro dele aguenta</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-2-rotina.jpeg" alt="Rotina Visual"><span class="ar-emoji">🌗</span><span class="ar-title">Rotina Visual</span><span class="ar-desc">Manhã e noite sem você repetir 10 vezes</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-3-emocional.jpeg" alt="Controle Emocional"><span class="ar-emoji">💪</span><span class="ar-title">Controle Emocional</span><span class="ar-desc">Menos crises, choro e birra</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-4-escolar.jpeg" alt="Organização Escolar"><span class="ar-emoji">📚</span><span class="ar-title">Organização Escolar</span><span class="ar-desc">Dever de casa sem guerra</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-5-missoes.jpeg" alt="Missões e Recompensas"><span class="ar-emoji">🏆</span><span class="ar-title">Missões e Recompensas</span><span class="ar-desc">A rotina vira um jogo que ele quer vencer</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-6-autoestima.jpeg" alt="Autoestima"><span class="ar-emoji">⭐</span><span class="ar-title">Autoestima</span><span class="ar-desc">Chega de "eu não consigo"</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-7-memoria.jpeg" alt="Memória e Hábitos"><span class="ar-emoji">🧠</span><span class="ar-title">Memória e Hábitos</span><span class="ar-desc">Fim dos esquecimentos diários</span></div>
+        <div class="area-card"><img class="ar-img" data-img="area-8-familiar.jpeg" alt="Conexão Familiar"><span class="ar-emoji">👨‍👩‍👦</span><span class="ar-title">Conexão Familiar</span><span class="ar-desc">Mais parceria, menos conflito</span></div>
+      </div>
+      <div class="modules-note">✨ As 8 áreas organizadas em 4 módulos + bônus — mais de 150 páginas personalizadas</div>
+    </div>
+
+    <div class="sales-section">
+      <h3 class="sales-h2">Como o planner <span class="kid-art">do</span> <span class="kid-name"></span> é organizado</h3>
+      <div class="module-card">
+        <div class="module-tag">MÓDULO 1</div>
+        <div class="module-title">Rotina Escolar e Dever de Casa</div>
+        <div class="module-desc">O fim da guerra do dever de casa: checklists visuais e cronograma de estudos que <span class="kid-name"></span> segue <b>sem você precisar mandar duas vezes</b>.</div>
+        <div class="module-mock"><img data-img="modulo-rotina.jpeg" alt="Módulo Rotina Escolar"></div>
+        <div class="module-meta">PDF para imprimir · Tamanho A4</div>
+      </div>
+      <div class="module-card">
+        <div class="module-tag">MÓDULO 2</div>
+        <div class="module-title">Emoções e Saúde</div>
+        <div class="module-desc">Termômetro de emoções, rotina de sono e alimentação: as crises diminuem porque ele <b>aprende a se entender</b> — e você para de apagar incêndio.</div>
+        <div class="module-mock"><img data-img="modulo-emocoes.jpeg" alt="Módulo Emoções e Saúde"></div>
+        <div class="module-meta">PDF para imprimir · Tamanho A4</div>
+      </div>
+      <div class="module-card">
+        <div class="module-tag">MÓDULO 3</div>
+        <div class="module-title">Missões e Recompensas</div>
+        <div class="module-desc">Quadro de missões, estrelas e conquistas: cada tarefa cumprida vira uma vitória que ele <b>consegue ver</b>. É aqui que a mágica acontece.</div>
+        <div class="module-mock"><img data-img="modulo-missoes.jpeg" alt="Módulo Missões e Recompensas"></div>
+        <div class="module-meta">PDF para imprimir · Tamanho A4</div>
+      </div>
+      <div class="module-card">
+        <div class="module-tag">MÓDULO 4</div>
+        <div class="module-title">Guia para Pais e Explicações</div>
+        <div class="module-desc">O manual que ninguém te entregou: como aplicar tudo <b>sem gritos, sem chantagem e sem culpa</b> — com scripts prontos do que falar em cada situação.</div>
+        <div class="module-mock"><img data-img="modulo-guia.jpeg" alt="Guia para Pais"></div>
+        <div class="module-meta">PDF para imprimir · Tamanho A4</div>
+      </div>
+      <img class="img-full" style="margin-top:16px;" data-img="emuitomais.jpeg" alt="E muito mais">
+      <button class="btn" onclick="goToOffer()">Quero o planner <span class="kid-art">do</span> <span class="kid-name"></span>!</button>
+    </div>
+
+    <div class="sales-section">
+      <h3 class="sales-h2">Por que funciona quando nada mais funcionou?</h3>
+      <div class="why-card"><div class="why-num">1</div><div><div class="why-title">Estímulo Dopaminérgico</div><div class="why-desc">O cérebro com TDAH não obedece a broncas — ele responde a recompensas. Cada página gera a dose de dopamina que faz seu filho <b>querer</b> agir.</div></div></div>
+      <div class="why-card"><div class="why-num">2</div><div><div class="why-title">Linguagem Visual Adaptada</div><div class="why-desc">Cores, ícones e símbolos no lugar de instruções faladas. O que está no papel libera o cérebro dele para executar.</div></div></div>
+      <div class="why-card"><div class="why-num">3</div><div><div class="why-title">Sistema de Missões</div><div class="why-desc">"Arruma o quarto" é abstrato. Uma missão com começo, meio, fim e prêmio é um desafio que ele aceita.</div></div></div>
+      <div class="why-card"><div class="why-num">4</div><div><div class="why-title">Micro-Conquistas Visíveis</div><div class="why-desc">Autoconfiança não se constrói com elogio — se constrói com prova. Cada estrela colada é a prova diária de que ele é capaz.</div></div></div>
+    </div>
+
+    <div class="sales-section">
+      <h3 class="sales-h2">A rotina <span class="kid-art">do</span> <span class="kid-name"></span> antes e depois</h3>
+      <div class="pair pair-before"><span class="p-tag">HOJE</span><br><b>Guerra diária no dever de casa</b> — gritos, lágrimas e horas de negociação que esgotam vocês dois.</div>
+      <div class="pair pair-after"><span class="p-tag">COM O PLANNER</span><br>Checklist visual que ele acompanha sozinho, com missão e recompensa no final.</div>
+      <div class="pair pair-before"><span class="p-tag">HOJE</span><br><b>Você repetindo a mesma ordem 10 vezes</b> — e se sentindo culpada por perder a paciência.</div>
+      <div class="pair pair-after"><span class="p-tag">COM O PLANNER</span><br>Rotina visual da manhã e da noite que ele segue sem você virar a "chata da casa".</div>
+      <div class="pair pair-before"><span class="p-tag">HOJE</span><br><b>"Eu sou burro. Eu não consigo."</b> — e seu coração apertando cada vez que ele diz isso.</div>
+      <div class="pair pair-after"><span class="p-tag">COM O PLANNER</span><br>Um quadro de conquistas que prova pra ele, todos os dias, do que ele é capaz.</div>
+    </div>
+
+    <div class="sales-section">
+      <h3 class="sales-h2">Mães e pais que estavam exatamente onde você está</h3>
+      <img class="depo-img" data-img="depo-1.webp" alt="Depoimento 1">
+      <img class="depo-img" data-img="depo-2.webp" alt="Depoimento 2">
+      <img class="depo-img" data-img="depo-3.webp" alt="Depoimento 3">
+      <img class="depo-img" data-img="depo-4.webp" alt="Depoimento 4">
+    </div>
+
+    <div class="sales-section">
+      <h3 class="sales-h2">Como funciona — rápido e super fácil</h3>
+      <div class="how-step"><div class="how-emoji">🛒</div><div><div class="how-title">1. Você garante o planner</div><div class="how-desc">Pagamento 100% seguro, aprovação em segundos.</div></div></div>
+      <div class="how-step"><div class="how-emoji">📩</div><div><div class="how-title">2. Recebe tudo no seu e-mail</div><div class="how-desc">Acesso imediato após a confirmação — sem espera, sem frete.</div></div></div>
+      <div class="how-step"><div class="how-emoji">🖨️</div><div><div class="how-title">3. Imprime em casa ou na gráfica</div><div class="how-desc">Arquivos em A4, para imprimir quantas vezes quiser.</div></div></div>
+      <div class="how-step"><div class="how-emoji">🚀</div><div><div class="how-title">4. A rotina muda ainda hoje</div><div class="how-desc">O Guia dos Pais mostra exatamente por onde começar na primeira noite.</div></div></div>
+    </div>
+
+    <div class="offer-card" id="oferta">
+      <div class="offer-title">Transforme o TDAH <span class="kid-art">do</span> <span class="kid-name"></span> na maior força dele</div>
+      <div class="countdown" id="countdown">10:00</div>
+      <div class="countdown-lbl">Sua oferta personalizada expira em breve</div>
+      <img class="offer-cover" data-img="capa-preco.jpeg" alt="Planner TDAH Produtivo Kids">
+      <div class="value-stack">
+        <div class="vs-item"><span class="v-chk">✓</span> 4 módulos completos personalizados</div>
+        <div class="vs-item"><span class="v-chk">✓</span> Guia dos Pais com scripts prontos</div>
+        <div class="vs-item"><span class="v-chk">✓</span> Sistema de missões, estrelas e conquistas</div>
+        <div class="vs-item"><span class="v-chk">✓</span> Bônus exclusivos + mais de 150 páginas</div>
+      </div>
+      <div class="price-old">De R$ 97,00</div>
+      <div class="price-new">R$ 29,90</div>
+      <div class="price-note">Pagamento único · Menos que uma pizza — por uma rotina inteira transformada</div>
+      <button class="btn" onclick="buyNow()">Quero o planner <span class="kid-art">do</span> <span class="kid-name"></span> agora!</button>
+      <div class="guarantee-box">
+        <div class="g-title">🛡️ Garantia incondicional de 7 dias</div>
+        <div class="g-desc">Aplique o planner na rotina. Se você não sentir diferença, devolvemos 100% do valor — sem perguntas, sem letra miúda. O risco é todo nosso.</div>
+      </div>
+      <div class="guarantee">🔒 Compra 100% segura · ⚡ Acesso imediato</div>
+    </div>
+
+    <p class="sales-disclaimer"><b>Aviso:</b> Este conteúdo tem caráter exclusivamente informativo e educacional. Não substitui consulta com médico, psicólogo ou outro profissional de saúde. O diagnóstico de TDAH deve ser feito por especialista qualificado, com base em avaliação clínica completa.</p>
+  </section>
+</div>
+
+<script>
+/* ================= CONFIGURAÇÃO =================
+   CHECKOUT_URL: link do seu checkout (Wiapy, Kirvano, etc).
+   Todos os botões de compra da página de vendas apontam pra ele.
+   SALES_DELAY_MS: tempo após "planner pronto" antes de abrir a página de vendas.
+   COUNTDOWN_MIN: minutos do contador regressivo da oferta. */
+const CHECKOUT_URL = "";
+/* IMG_BASE: pasta ou URL onde estão SUAS imagens (com os mesmos nomes de
+   arquivo: depo-1.webp, modulo-rotina.jpeg, area-1-foco.jpeg, capa-preco.jpeg etc).
+   Ex.: "img/" ou "https://seusite.com/assets/". Enquanto estiver vazio ou
+   alguma imagem faltar, o slot some sozinho e a página não quebra. */
+const IMG_BASE = "img/";
+const SALES_DELAY_MS = 2500;
+const COUNTDOWN_MIN = 10;
+/* ================================================ */
+
+const TOTAL_STEPS = 15;
+let state = { gender:null, age:null, name:"" };
+
+function goTo(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  const step = document.querySelector('.step[data-step="'+n+'"]');
+  step.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('progressBar').style.width = ((n-1)/(TOTAL_STEPS-1)*100)+'%';
+  if(n===8) animateDiagBars();
+}
+
+/* etapa 2 */
+function pickGender(el){
+  document.querySelectorAll('.gender-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.gender = el.dataset.value;
+  document.getElementById('btnGender').disabled = false;
+  const isBoy = state.gender==='menino';
+  document.getElementById('counterNum').textContent = isBoy ? '4.231 meninos' : '4.108 meninas';
+  document.getElementById('pronoun').textContent = isBoy ? 'ele' : 'ela';
+  document.getElementById('nameEmoji').textContent = isBoy ? '🧒' : '👧';
+  document.getElementById('nameTitle').textContent = isBoy ? 'Qual o nome do seu filho?' : 'Qual o nome da sua filha?';
+  document.getElementById('nameSub').textContent = isBoy ? 'Vamos personalizar o planner com o nome dele' : 'Vamos personalizar o planner com o nome dela';
+  document.querySelector('#childName').placeholder = isBoy ? 'Digite o nome dele' : 'Digite o nome dela';
+}
+
+/* etapa 3 */
+function pickAge(el){
+  document.querySelectorAll('.age-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.age = el.dataset.value;
+  document.getElementById('btnAge').disabled = false;
+}
+
+/* etapa 4 */
+function checkName(){
+  const v = document.getElementById('childName').value.trim();
+  document.getElementById('btnName').disabled = v.length < 2;
+}
+function saveName(){
+  state.name = document.getElementById('childName').value.trim();
+  document.querySelectorAll('.kid-name').forEach(el=>el.textContent = state.name);
+  const art = state.gender === 'menina' ? 'da' : 'do';
+  document.querySelectorAll('.kid-art').forEach(el=>el.textContent = art);
+  goTo(5);
+}
+
+/* multi-select */
+function toggleOpt(el, listId){
+  el.classList.toggle('selected');
+  const list = document.getElementById(listId);
+  const all = list.querySelector('.opt-all');
+  if(all && !el.classList.contains('selected')) all.classList.remove('selected');
+  updateBtn(listId);
+}
+function toggleAll(el, listId){
+  const list = document.getElementById(listId);
+  const willSelect = !el.classList.contains('selected');
+  list.querySelectorAll('.opt').forEach(o=>o.classList.toggle('selected', willSelect));
+  updateBtn(listId);
+}
+function updateBtn(listId){
+  const num = listId.replace('list','');
+  const any = document.getElementById(listId).querySelectorAll('.opt.selected').length > 0;
+  const btn = document.getElementById('btn'+num);
+  if(btn) btn.disabled = !any;
+}
+
+/* etapa 8: barras do diagnóstico */
+function animateDiagBars(){
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(b=>{ b.style.width = b.dataset.w + '%'; });
+  }, 250);
+}
+
+/* etapa 14: montagem final */
+function startFinal(){
+  goTo(14);
+  launchConfetti();
+  const fill = document.getElementById('finalFill');
+  const pct = document.getElementById('fpPct');
+  const head = document.getElementById('fpHead');
+  const items = document.querySelectorAll('.build-item');
+  let p = 0;
+  const timer = setInterval(()=>{
+    p += 2;
+    if(p > 100) p = 100;
+    fill.style.width = p + '%';
+    pct.textContent = p + '%';
+    const idx = Math.floor(p / (100/items.length));
+    items.forEach((it,i)=>{ if(i < idx) it.classList.add('on'); });
+    if(p >= 100){
+      clearInterval(timer);
+      items.forEach(it=>it.classList.add('on'));
+      head.classList.add('done');
+      head.querySelector('.fp-label').textContent = 'Planner TDAH Produtivo Kids criado!';
+      document.getElementById('readyBox').classList.add('show');
+      /* Após o "planner pronto", abre a página de vendas integrada */
+      setTimeout(()=>{ goTo(15); startCountdown(); }, SALES_DELAY_MS);
+    }
+  }, 90);
+}
+
+function goToOffer(){
+  document.getElementById('oferta').scrollIntoView({behavior:'smooth'});
+}
+
+function buyNow(){
+  if(CHECKOUT_URL){ window.location.href = CHECKOUT_URL; }
+  else { alert('Configure o CHECKOUT_URL no topo do script para apontar os botões de compra para o seu checkout.'); }
+}
+
+/* contador regressivo da oferta */
+let countdownStarted = false;
+function startCountdown(){
+  if(countdownStarted) return;
+  countdownStarted = true;
+  let secs = COUNTDOWN_MIN * 60;
+  const el = document.getElementById('countdown');
+  const t = setInterval(()=>{
+    secs--;
+    if(secs <= 0){ secs = 0; clearInterval(t); }
+    const m = String(Math.floor(secs/60)).padStart(2,'0');
+    const s = String(secs%60).padStart(2,'0');
+    el.textContent = m + ':' + s;
+  }, 1000);
+}
+
+function launchConfetti(){
+  const pieces = ['🎉','🎊','⭐','✨'];
+  for(let i=0;i<24;i++){
+    const c = document.createElement('span');
+    c.className = 'confetti';
+    c.textContent = pieces[Math.floor(Math.random()*pieces.length)];
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.animationDuration = (2.2 + Math.random()*2) + 's';
+    c.style.animationDelay = (Math.random()*0.8) + 's';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 5500);
+  }
+}
+
+/* carrega as imagens a partir de IMG_BASE; esconde slots sem imagem */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('[data-img]').forEach(img=>{
+    img.onerror = ()=>{
+      if(img.dataset.fallback){
+        const s = document.createElement('span');
+        s.className = img.classList.contains('g-img') ? 'g-emoji' : '';
+        s.textContent = img.dataset.fallback;
+        img.replaceWith(s);
+      } else {
+        img.style.display = 'none';
+      }
+    };
+    img.src = IMG_BASE + img.dataset.img;
+  });
+});
+</script>
+</body>
+</html>
